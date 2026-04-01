@@ -1,0 +1,7 @@
+[
+  "This dataset captures regional weather and power-demand trends, with clear seasonal movement and moderate variance in humidity across zones.",
+  "A balanced tabular snapshot of climate and energy indicators, suitable for exploratory analysis, baseline forecasting, and anomaly checks.",
+  "Structured observations of temperature, rainfall, and demand suggest predictable regional patterns with occasional high-demand spikes in warmer areas.",
+  "A clean, compact dataset for testing data pipelines, featuring numeric environmental signals and a practical target-like demand metric.",
+  "Environmental and consumption metrics are well-aligned for introductory modeling tasks, especially for regression and feature-correlation studies."
+]

@@ -1,0 +1,11 @@
+record_id,region,temperature_c,rainfall_mm,humidity_pct,energy_demand_mwh
+1,North,22.4,110,68,430
+2,South,29.1,75,54,520
+3,East,18.9,140,72,390
+4,West,25.7,92,61,470
+5,Central,21.3,125,66,445
+6,North,23.5,105,64,452
+7,South,30.2,70,51,538
+8,East,19.6,150,74,401
+9,West,26.1,88,59,482
+10,Central,20.8,132,69,437

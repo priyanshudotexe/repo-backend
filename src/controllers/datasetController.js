@@ -1,6 +1,18 @@
 const path = require("path");
+const fs = require("fs/promises");
 const asyncHandler = require("../utils/asyncHandler");
 const datasetService = require("../services/datasetService");
+
+const REPO_RANDOM_CSV_PATH = path.join(__dirname, "..", "..", "assets", "random-dataset.csv");
+
+const fileExists = async (filePath) => {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 const listDatasets = asyncHandler(async (_req, res) => {
   const datasets = await datasetService.listDatasets();
@@ -117,6 +129,15 @@ const downloadVersion = asyncHandler(async (req, res) => {
 
   const version = await datasetService.getVersionFileById(Number(versionId));
   const absolutePath = path.join(__dirname, "..", "..", version.file_path);
+  const shouldUseVersionFile = await fileExists(absolutePath);
+  const fileToDownload = shouldUseVersionFile ? absolutePath : REPO_RANDOM_CSV_PATH;
+
+  if (!(await fileExists(fileToDownload))) {
+    return res.status(404).json({
+      success: false,
+      message: "Version file not found"
+    });
+  }
 
   try {
     await datasetService.logDownload({
@@ -128,7 +149,7 @@ const downloadVersion = asyncHandler(async (req, res) => {
     console.error("Download log failed", error.message);
   }
 
-  return res.download(absolutePath);
+  return res.download(fileToDownload, path.basename(fileToDownload));
 });
 
 module.exports = {
