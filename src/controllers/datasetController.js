@@ -3,7 +3,13 @@ const fs = require("fs/promises");
 const asyncHandler = require("../utils/asyncHandler");
 const datasetService = require("../services/datasetService");
 
-const REPO_RANDOM_CSV_PATH = path.join(__dirname, "..", "..", "assets", "random-dataset.csv");
+const REPO_RANDOM_CSV_PATH = path.join(
+  __dirname,
+  "..",
+  "..",
+  "assets",
+  "random-dataset.csv",
+);
 
 const fileExists = async (filePath) => {
   try {
@@ -25,7 +31,7 @@ const getDatasetById = asyncHandler(async (req, res) => {
   if (!Number.isInteger(Number(datasetId))) {
     return res.status(400).json({
       success: false,
-      message: "Invalid dataset id"
+      message: "Invalid dataset id",
     });
   }
 
@@ -34,7 +40,7 @@ const getDatasetById = asyncHandler(async (req, res) => {
   if (!dataset) {
     return res.status(404).json({
       success: false,
-      message: "Dataset not found"
+      message: "Dataset not found",
     });
   }
 
@@ -47,11 +53,13 @@ const listFeedback = asyncHandler(async (req, res) => {
   if (!Number.isInteger(Number(datasetId))) {
     return res.status(400).json({
       success: false,
-      message: "Invalid dataset id"
+      message: "Invalid dataset id",
     });
   }
 
-  const feedback = await datasetService.listFeedbackByDatasetId(Number(datasetId));
+  const feedback = await datasetService.listFeedbackByDatasetId(
+    Number(datasetId),
+  );
   res.json(feedback);
 });
 
@@ -62,21 +70,25 @@ const upsertFeedback = asyncHandler(async (req, res) => {
   if (!Number.isInteger(Number(datasetId))) {
     return res.status(400).json({
       success: false,
-      message: "Invalid dataset id"
+      message: "Invalid dataset id",
     });
   }
 
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
     return res.status(400).json({
       success: false,
-      message: "Rating must be an integer between 1 and 5"
+      message: "Rating must be an integer between 1 and 5",
     });
   }
 
-  if (comment !== undefined && comment !== null && typeof comment !== "string") {
+  if (
+    comment !== undefined &&
+    comment !== null &&
+    typeof comment !== "string"
+  ) {
     return res.status(400).json({
       success: false,
-      message: "Comment must be a string"
+      message: "Comment must be a string",
     });
   }
 
@@ -84,7 +96,7 @@ const upsertFeedback = asyncHandler(async (req, res) => {
     datasetId: Number(datasetId),
     userId: req.user.id,
     rating,
-    comment
+    comment,
   });
 
   res.json(result);
@@ -96,14 +108,18 @@ const uploadDataset = asyncHandler(async (req, res) => {
   if (!title || !req.file) {
     return res.status(400).json({
       success: false,
-      message: "Title and CSV file are required"
+      message: "Title and CSV file are required",
     });
   }
 
-  if (description !== undefined && description !== null && typeof description !== "string") {
+  if (
+    description !== undefined &&
+    description !== null &&
+    typeof description !== "string"
+  ) {
     return res.status(400).json({
       success: false,
-      message: "Description must be a string"
+      message: "Description must be a string",
     });
   }
 
@@ -111,7 +127,7 @@ const uploadDataset = asyncHandler(async (req, res) => {
     userId: req.user.id,
     title,
     description,
-    file: req.file
+    file: req.file,
   });
 
   res.status(201).json(result);
@@ -123,19 +139,21 @@ const downloadVersion = asyncHandler(async (req, res) => {
   if (!Number.isInteger(Number(versionId))) {
     return res.status(400).json({
       success: false,
-      message: "Invalid version id"
+      message: "Invalid version id",
     });
   }
 
   const version = await datasetService.getVersionFileById(Number(versionId));
   const absolutePath = path.join(__dirname, "..", "..", version.file_path);
   const shouldUseVersionFile = await fileExists(absolutePath);
-  const fileToDownload = shouldUseVersionFile ? absolutePath : REPO_RANDOM_CSV_PATH;
+  const fileToDownload = shouldUseVersionFile
+    ? absolutePath
+    : REPO_RANDOM_CSV_PATH;
 
   if (!(await fileExists(fileToDownload))) {
     return res.status(404).json({
       success: false,
-      message: "Version file not found"
+      message: "Version file not found",
     });
   }
 
@@ -143,7 +161,7 @@ const downloadVersion = asyncHandler(async (req, res) => {
     await datasetService.logDownload({
       datasetId: version.dataset_id,
       versionId: version.version_id,
-      userId: req.user?.id || null
+      userId: req.user?.id || null,
     });
   } catch (error) {
     console.error("Download log failed", error.message);
@@ -158,5 +176,5 @@ module.exports = {
   listFeedback,
   upsertFeedback,
   uploadDataset,
-  downloadVersion
+  downloadVersion,
 };
